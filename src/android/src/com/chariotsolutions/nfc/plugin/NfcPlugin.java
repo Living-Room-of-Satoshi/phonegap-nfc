@@ -187,8 +187,10 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
 
         } else if (action.equalsIgnoreCase(INIT)) {
             init(callbackContext);
+            //Moved postponedPluginResult to happen after INIT action, as CHANNEL was too early
+            //Mime Type/Listener hadn't been registered in the App yet.
             if (postponedPluginResult != null) {
-                Log.i(TAG, "Postponed plugin result available - called from INIT");
+                Log.i(TAG, "Postponed plugin result available");
 
                 if (postponedPluginResult.isValid()) {
                     Log.i(TAG, "Postponed plugin result is valid, resending it now");
