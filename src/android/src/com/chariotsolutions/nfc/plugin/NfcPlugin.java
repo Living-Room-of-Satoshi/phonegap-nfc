@@ -123,21 +123,6 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
         // the channel is set up when the plugin starts
         if (action.equalsIgnoreCase(CHANNEL)) {
             channelCallback = callbackContext;
-
-            if (postponedPluginResult != null) {
-                Log.i(TAG, "Postponed plugin result available");
-
-                if (postponedPluginResult.isValid()) {
-                    Log.i(TAG, "Postponed plugin result is valid, resending it now");
-
-                    channelCallback.sendPluginResult(postponedPluginResult.pluginResult);
-                } else {
-                    Log.i(TAG, "Postponed plugin result not valid anymore, so ignoring it");
-                }
-
-                postponedPluginResult = null;
-            }
-
             return true; // short circuit
         }
 
@@ -202,6 +187,19 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
 
         } else if (action.equalsIgnoreCase(INIT)) {
             init(callbackContext);
+            if (postponedPluginResult != null) {
+                Log.i(TAG, "Postponed plugin result available - called from INIT");
+
+                if (postponedPluginResult.isValid()) {
+                    Log.i(TAG, "Postponed plugin result is valid, resending it now");
+
+                    channelCallback.sendPluginResult(postponedPluginResult.pluginResult);
+                } else {
+                    Log.i(TAG, "Postponed plugin result not valid anymore, so ignoring it");
+                }
+
+                postponedPluginResult = null;
+            }
 
         } else if (action.equalsIgnoreCase(ENABLED)) {
             // status is checked before every call
